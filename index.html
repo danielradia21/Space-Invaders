@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allison&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Space Invaders</title>
+</head>
+
+
+
+
+<body onkeyup="onKeyDown(event)" onload="init()">
+    <div class="background-container">
+        <div class="stars"></div>
+        <div class="twinkling"></div>
+        <div class="clouds"></div>
+    </div>
+    <h1> 👽 Space Invaders 👽</h1>
+    <div class="user-menu">
+        <h2>Your Points : <span class="points"></span></h2>
+        <h2>Super Shoots : <span class="super-shoot"></span></h2>
+        <h2>Neighbors Mode : <span class="negs-mode"></span></h2>
+    </div>
+    <div class="starters">
+        <button class="btn" onclick="start()">start</button>
+        <button class="btn" onclick="resetGame()">restart</button>
+
+    </div>
+
+
+    <table>
+        <tbody class="game-board">
+        </tbody>
+    </table>
+
+    <div class="levels">
+        <button class="btn" onclick="levels(500,8,3,'beg',0,2)">Beginner</button>
+        <button class="btn" onclick="levels(300,9,4,'med',0,3)">Medium</button>
+        <button class="btn" onclick="levels(200,10,5,'ex',0,4)">Expert</button>
+
+    </div>
+    <div class="modal">
+    </div>
+
+
+    <footer>Create & Design By <span class="my-name">Daniel Radia 🤖</span></footer>
+    <script src="js/sUtils.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+
+</html>

@@ -22,20 +22,25 @@
 
 
 <body onkeyup="onKeyDown(event)" onload="init()">
+
     <div class="background-container">
         <div class="stars"></div>
         <div class="twinkling"></div>
         <div class="clouds"></div>
     </div>
-    <h1> 👽 Space Invaders 👽</h1>
+    <h1>👽 Space Invaders 👽</h1>
     <div class="user-menu">
         <h2>Your Points : <span class="points"></span></h2>
         <h2>Super Shoots : <span class="super-shoot"></span></h2>
         <h2>Neighbors Mode : <span class="negs-mode"></span></h2>
+        <h2>Lives : <span class="lives"></span></h2>
     </div>
     <div class="starters">
-        <button class="btn" onclick="start()">start</button>
-        <button class="btn" onclick="resetGame()">restart</button>
+        <button class="sound btn" onclick="mute()">🔈</button>
+        <button class="btn" onclick="rules()">Rules</button>
+        <button class="btn" onclick="start()">Start</button>
+        <button class="btn" onclick="resetGame()">Restart</button>
+
 
     </div>
 
@@ -51,11 +56,11 @@
         <button class="btn" onclick="levels(200,10,5,'ex',0,4)">Expert</button>
 
     </div>
-    <div class="modal">
-    </div>
+    <div class="modal"></div>
+    <div class="rules"></div>
 
 
-    <footer>Create & Design By <span class="my-name">Daniel Radia 🤖</span></footer>
+    <footer>Created & Designed By <span class="my-name">Daniel Radia 🤖</span></footer>
     <script src="js/sUtils.js"></script>
     <script src="js/main.js"></script>
 

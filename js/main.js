@@ -1,6 +1,11 @@
 'use strict';
 //globals
 //main
+var gHitSound = new Audio('./sounds/hit.wav');
+var gAmbient = new Audio('./sounds/bg.mp3');
+gAmbient.volume = 0.2;
+var gSuperShootSound = new Audio('./sounds/shortSuperShoot.wav');
+var gShootSound = new Audio('./sounds/shortShoot.wav');
 const BOARD_SIZE = 15;
 const LASER = '🔼';
 const SUPER_LASER = '💥';
@@ -26,16 +31,14 @@ var gNegsShoot = false;
 const POOP = '💩';
 const POOP_SPEED = 100;
 const ALIEN = '👾';
-
 var gIntervalAliens;
-
 var gIsAlienFreeze = true;
 
 //hero
 const HERO = '🗼';
 const LASER_SPEED = 80;
 var gLaserInterval;
-var gHero = { pos: { i: 13, j: 7 }, isShoot: false };
+var gHero = { pos: { i: 13, j: 7 }, isShoot: false, lives: 3 };
 // creates the hero and place it on board
 
 // Matrix of cell objects. e.g.: {type: SKY, gameObject: ALIEN}
@@ -49,32 +52,47 @@ var gCurrLevel = 'beg';
 var elH2 = document.querySelector('.negs-mode');
 //functions
 function init() {
-    gGame.isOn = false;
+    gAmbient.play();
+    gIntervalAliens = null;
+    clearInterval(gIntervalAliens);
+    gStarInterval = null;
+    clearInterval(gStarInterval);
+    closeModal();
     gNegsShoot = false;
     elH2.innerText = 'OFF';
     elH2.style.backgroundColor = 'red';
-    closeModal();
-    clearInterval(gIntervalAliens);
-    clearInterval(gStarInterval);
     gSuperShoots = 3;
     document.querySelector('.super-shoot').innerText = gSuperShoots;
+    gHero.lives;
+    document.querySelector('.lives').innerText = gHero.lives;
     gPoints = 0;
     document.querySelector('.points').innerText = gPoints;
-    gBoard = createBoard(BOARD_SIZE);
-    renderBoard(gBoard);
     gGame.aliensCount = gAliens.aliensRowCount * gAliens.aliensRowLength;
     gAliens.gAliensTopRowIdx = gAliens.gAliensTopRowIdx;
     gAliens.gAliensBottomRowIdx = gAliens.gAliensBottomRowIdx;
+    gBoard = createBoard(BOARD_SIZE);
+    renderBoard(gBoard);
 }
+
 function start() {
     if (gGame.isOn) {
         return;
     }
+    gAmbient.play();
     gGame.isOn = true;
     moveAliens();
     gStarInterval = setInterval(randomStar, 10000);
 }
 
+function mute() {
+    if (gAmbient.volume === 0) {
+        gAmbient.volume = 0.2;
+        document.querySelector('.sound').style.textDecoration = 'none';
+    } else {
+        gAmbient.volume = 0;
+        document.querySelector('.sound').style.textDecoration = 'line-through';
+    }
+}
 function createBoard(BOARD_SIZE) {
     var board = [];
     for (var i = 0; i < BOARD_SIZE; i++) {
@@ -85,7 +103,6 @@ function createBoard(BOARD_SIZE) {
             board[i][j] = currCell;
         }
     }
-
     createAliens(board);
     createHero(board);
     return board;
@@ -152,6 +169,7 @@ function onKeyDown(ev) {
                 if (gHero.isShoot) return;
                 gHero.isShoot = true;
                 gSuperMode = true;
+
                 shoot({ i: i - 1, j });
                 break;
         }
@@ -174,12 +192,17 @@ function shoot(pos) {
         gSuperMode = false;
     }
     if (gSuperMode) {
+        gSuperShootSound.play();
+        gNegsShoot = true;
+        elH2.innerText = 'ON';
+        elH2.style.backgroundColor = 'green';
         updateCell(pos, SUPER_LASER);
         gLaserInterval = setInterval(function () {
             blinkLaser(pos);
         }, SUPER_LASER_SPEED);
         gSuperShoots--;
     } else {
+        gShootSound.play();
         updateCell(pos, LASER);
         gLaserInterval = setInterval(function () {
             blinkLaser(pos);
@@ -196,8 +219,8 @@ function blinkLaser(pos) {
         gHero.isShoot = false;
         return;
     }
-
     if (nextCell.innerText === ALIEN) {
+        gHitSound.play();
         if (gNegsShoot) {
             blowUpNegs(pos);
             gNegsShoot = false;
@@ -254,16 +277,21 @@ function createAliens(board) {
 }
 
 function gameOver(isGameOver = false) {
+    clearInterval(gIntervalAliens);
+    gIntervalAliens = null;
+    gGame.isOn = false;
+
+    clearInterval(gStarInterval);
+    gStarInterval = null;
     if (!isGameOver) {
         var modalStr =
-            'You Save The Universe !  </br> <button class="btn" onclick="resetGame()">Reset Game</button>';
+            '“Houston, Tranquillity Base Here. The Eagle Has Landed.”</br>You Save The Universe !</br> <button class="btn" onclick="resetGame()">Reset Game</button>';
         openModal(modalStr);
-        clearInterval(gIntervalAliens);
+        return;
     } else if (isGameOver) {
-        var modalStr =
-            'You Lost Our Galaxy ! </br> <button class="btn" onclick="resetGame()">Reset Game</button>';
+        var modalStr = `“Houston, We've Had A Problem Here.”</br>You Lost Our Galaxy !</br> <button class="btn" onclick="resetGame()">Reset Game</button>'`;
+
         openModal(modalStr);
-        clearInterval(gIntervalAliens);
         return;
     }
 }
@@ -285,13 +313,13 @@ function shiftBoardRight(board, fromI, toI) {
     for (var i = fromI; i <= toI; i++) {
         for (var j = board.length - 1; j >= 0; j--) {
             if (getElCell({ i: i, j: j }).innerText === LASER) {
-                console.log('hit');
                 gGame.aliensCount--;
                 gPoints += 10;
             }
             if (getElCell({ i: i, j: j }).innerText === ALIEN) {
                 if (j === board.length - 1) {
                     clearInterval(gIntervalAliens);
+                    gIntervalAliens = null;
                     shiftBoardDown(
                         board,
                         gAliens.gAliensTopRowIdx++,
@@ -319,13 +347,13 @@ function shiftBoardLeft(board, fromI, toI) {
     for (var i = fromI; i <= toI; i++) {
         for (var j = 0; j <= board.length - 1; j++) {
             if (getElCell({ i: i, j: j }).innerText === LASER) {
-                console.log('hit');
                 gGame.aliensCount--;
                 gPoints += 10;
             }
             if (getElCell({ i: i, j: j }).innerText === ALIEN) {
                 if (j === 0) {
                     clearInterval(gIntervalAliens);
+                    // gIntervalAliens = null;
                     shiftBoardDown(
                         board,
                         gAliens.gAliensTopRowIdx++,
@@ -357,6 +385,7 @@ function shiftBoardDown(board, fromI, toI) {
                 updateCell({ i: i + 1, j: j }, ALIEN);
                 if (gAliens.gAliensBottomRowIdx === board.length - 2) {
                     gameOver(true);
+                    return;
                 }
             }
         }
@@ -365,6 +394,8 @@ function shiftBoardDown(board, fromI, toI) {
 }
 
 function moveAliens() {
+    gIntervalAliens = null;
+
     gIntervalAliens = setInterval(function () {
         shiftBoardRight(
             gBoard,
@@ -375,6 +406,8 @@ function moveAliens() {
 }
 
 function resetGame() {
+    clearInterval(gIntervalAliens);
+    init();
     if (gCurrLevel === 'beg') {
         levels(500, 8, 3, 'beg', 0, 2);
     } else if (gCurrLevel === 'med') {
@@ -382,8 +415,6 @@ function resetGame() {
     } else if (gCurrLevel === 'ex') {
         levels(200, 10, 5, 'ex', 0, 4);
     }
-    gGame.isOn = false;
-    init();
 }
 
 function levels(num, length, count, lvlName, tRowIdx, bRowIdx) {
@@ -399,9 +430,9 @@ function levels(num, length, count, lvlName, tRowIdx, bRowIdx) {
         gAliensBottomRowIdx: bRowIdx,
     };
     gGame.isOn = false;
-    init();
     createBoard(BOARD_SIZE);
     renderBoard(gBoard);
+    init();
 }
 
 function blowUpNegs(pos) {
@@ -428,4 +459,22 @@ function randomStar() {
     setTimeout(function () {
         updateCell({ i: randLocation.i, j: randLocation.j }, '');
     }, 5000);
+}
+
+function rules() {
+    var elRulesDiv = document.querySelector('.rules');
+
+    elRulesDiv.style.display = 'block';
+    elRulesDiv.innerHTML = `<h3 class="rules-title">Welcome To The Spaceship Solider !</h3>'SPACE': Shoot One Laser Every Time<br>
+    'RIGHT & LEFT KEYS': Move To The Sides<br>
+    'N' KEY: Activate Neighbors Mode<br>
+    'X' KEY: Super Hit - Alien And His Neighbors<br>
+    'F11': For Full Experience
+    <h3 class="rules-footer">“Planet Earth Is Actually A Giant Spaceship Floating Through Space.”</h3><button onclick="closeRules()" class="btn">Close</button>
+    `;
+}
+
+function closeRules() {
+    var elRulesDiv = document.querySelector('.rules');
+    elRulesDiv.style.display = 'none';
 }

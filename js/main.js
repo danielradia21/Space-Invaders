@@ -287,7 +287,7 @@ function gameOver(isGameOver = false) {
         openModal(modalStr);
         return;
     } else if (isGameOver) {
-        var modalStr = `“Houston, We've Had A Problem Here.”</br>You've Lost Our Galaxy !</br> <button class="btn" onclick="resetGame()">Reset Game</button>'`;
+        var modalStr = `“Houston, We've Had A Problem Here.”</br>You've Lost Our Galaxy !</br><button class="btn" onclick="resetGame()">Reset Game</button>`;
 
         openModal(modalStr);
         return;

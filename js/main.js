@@ -1,11 +1,11 @@
 'use strict';
 //globals
 //main
-var gHitSound = new Audio('../sounds/hit.wav');
-var gAmbient = new Audio('../sounds/bg.mp3');
+var gHitSound = new Audio('./sounds/hit.wav');
+var gAmbient = new Audio('./sounds/bg.mp3');
 gAmbient.volume = 0.2;
-var gSuperShootSound = new Audio('../sounds/shortSuperShoot.wav');
-var gShootSound = new Audio('../sounds/shortShoot.wav');
+var gSuperShootSound = new Audio('./sounds/shortSuperShoot.wav');
+var gShootSound = new Audio('./sounds/shortShoot.wav');
 const BOARD_SIZE = 15;
 const LASER = '🔼';
 const SUPER_LASER = '💥';

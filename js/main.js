@@ -28,8 +28,6 @@ var gStarInterval;
 var gNegsShoot = false;
 //alien
 
-const POOP = '💩';
-const POOP_SPEED = 100;
 const ALIEN = '👾';
 var gIntervalAliens;
 var gIsAlienFreeze = true;
@@ -285,11 +283,11 @@ function gameOver(isGameOver = false) {
     gStarInterval = null;
     if (!isGameOver) {
         var modalStr =
-            '“Houston, Tranquillity Base Here. The Eagle Has Landed.”</br>You Save The Universe !</br> <button class="btn" onclick="resetGame()">Reset Game</button>';
+            '“Houston, Tranquillity Base Here. The Eagle Has Landed.”</br>You Saved The Universe !</br> <button class="btn" onclick="resetGame()">Reset Game</button>';
         openModal(modalStr);
         return;
     } else if (isGameOver) {
-        var modalStr = `“Houston, We've Had A Problem Here.”</br>You Lost Our Galaxy !</br> <button class="btn" onclick="resetGame()">Reset Game</button>'`;
+        var modalStr = `“Houston, We've Had A Problem Here.”</br>You've Lost Our Galaxy !</br> <button class="btn" onclick="resetGame()">Reset Game</button>'`;
 
         openModal(modalStr);
         return;
@@ -465,7 +463,7 @@ function rules() {
     var elRulesDiv = document.querySelector('.rules');
 
     elRulesDiv.style.display = 'block';
-    elRulesDiv.innerHTML = `<h3 class="rules-title">Welcome To The Spaceship Solider !</h3>'SPACE': Shoot One Laser Every Time<br>
+    elRulesDiv.innerHTML = `<h3 class="rules-title">Welcome To The Spaceship Soldier !</h3>'SPACE': Shoot One Laser Every Time<br>
     'RIGHT & LEFT KEYS': Move To The Sides<br>
     'N' KEY: Activate Neighbors Mode<br>
     'X' KEY: Super Hit - Alien And His Neighbors<br>
